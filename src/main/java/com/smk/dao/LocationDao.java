@@ -5,6 +5,7 @@ import com.smk.model.Location;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
@@ -14,6 +15,7 @@ public class LocationDao implements Dao<Location, Integer> {
     public LocationDao() {
         connection = JdbcConnection.getConnection();
     }
+
     @Override
     public Optional<Location> get(int id) {
         return Optional.empty();
@@ -23,9 +25,9 @@ public class LocationDao implements Dao<Location, Integer> {
     public Collection<Location> getAll() {
         Collection<Location> result = new LinkedList<>();
         String sql = "SELECT * FROM location";
-        connection.ifPresent(connection1 ->{
+        connection.ifPresent(connection ->{
             try{
-                PreparedStatement ps = connection1.prepareStatement(sql);
+                PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     int id = rs.getInt("id");
@@ -35,7 +37,7 @@ public class LocationDao implements Dao<Location, Integer> {
                     location.setName(name);
                     result.add(location);
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         } );
